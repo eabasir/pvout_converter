@@ -1,4 +1,4 @@
-package main
+package file_processor
 
 import (
 	"bufio"
@@ -9,12 +9,6 @@ import (
 	"strings"
 )
 
-const FILE_PATH_PREFIX = "input/PVOUT_"
-const START_X = -180
-const START_Y = -60
-const INCREMENT = 1 / 120 // 30 arc-second
-const HEADER_LINES = 6
-
 type PVData struct {
 	month     int
 	latitude  float64
@@ -22,29 +16,19 @@ type PVData struct {
 	value     float64
 }
 
-func main() {
+const FILE_PATH_PREFIX = "input/PVOUT_"
+const START_X = -180
+const START_Y = -60
+const INCREMENT = 1 / 120 // 30 arc-second
+const HEADER_LINES = 6
 
-	// if len(os.Args) < 2 {
-	// 	fmt.Println("Usage: go run main.go <month>")
-	// 	return
-	// }
-
-	// month_arg := os.Args[1]
-
-	month_arg := "1"
-
-	month, err := strconv.Atoi(month_arg)
-
-	if err != nil {
-		fmt.Println("input month is not a number")
-		return
-	}
+func GetFileData(month int) ([]PVData, error) {
 
 	filename, err := get_file_name(month)
 
 	if err != nil {
 		fmt.Println("Error:", err)
-		return
+		return nil, err
 	}
 
 	fmt.Printf("Reading %s\n", filename)
@@ -52,21 +36,15 @@ func main() {
 	file, err := os.Open(filename)
 	if err != nil {
 		fmt.Println("Error:", err)
-		return
-	}
-	defer file.Close()
-
-	readFile(filename, month)
-
-}
-
-func readFile(filename string, month int) ([]PVData, error) {
-	file, err := os.Open(filename)
-	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
+	return readFile(file, month)
+
+}
+
+func readFile(file *os.File, month int) ([]PVData, error) {
 	reader := bufio.NewReader(file)
 	line_counter := 0
 	results := make([]PVData, 0)
@@ -102,7 +80,6 @@ func readFile(filename string, month int) ([]PVData, error) {
 		}
 		total_results += len(line_results)
 		fmt.Printf("valid values in line %d: %d\n", line_counter, total_results)
-		// results = append(results, line_results...)
 
 	}
 
