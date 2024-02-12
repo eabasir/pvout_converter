@@ -1,31 +1,51 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
-	"strconv"
-
-	"github.com/eabasir/pvout_converter/internal/file_processor"
+	"pvout_converter/internal/configs"
+	"pvout_converter/internal/db_manager"
+	"pvout_converter/internal/file_processor"
 )
+
+const FILE_PATH_PREFIX = "input/PVOUT_"
 
 func main() {
 
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: go run main.go <month>")
-		return
-	}
+	configs := configs.GetConfigs()
 
-	month_arg := os.Args[1]
-
-	// month_arg := "1"
-
-	month, err := strconv.Atoi(month_arg)
+	filename, err := get_file_name(configs.Month)
 
 	if err != nil {
-		fmt.Println("input month is not a number")
-		return
+		panic(err)
 	}
 
-	file_processor.GetFileData(month)
+	fmt.Printf("Reading %s\n", filename)
+
+	file, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	db, err := db_manager.ConnectDB(configs)
+	if err != nil {
+		panic(err)
+	}
+	defer db_manager.CloseDB(db)
+
+	file_processor.ProcessFile(file, configs.Month, db)
+
+}
+
+func get_file_name(month int) (string, error) {
+
+	if month < 1 || month > 12 {
+		fmt.Println("input month is not in the range 1-12")
+		return "", errors.New("month out of range")
+	}
+
+	return fmt.Sprintf("%s%02d.asc", FILE_PATH_PREFIX, month), nil
 
 }

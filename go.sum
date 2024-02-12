@@ -1,3 +1,9 @@
+github.com/cridenour/go-postgis v1.0.0 h1:yK82fCY6k0MBCkyeEZDFijalxLNqPECekyNlcjC/B9Q=
+github.com/cridenour/go-postgis v1.0.0/go.mod h1:AtTeWrKgwtl5WjwG1oJwcc3AHIf/EC1ngklA0XZKLls=
+github.com/golang/geo v0.0.0-20230421003525-6adc56603217 h1:HKlyj6in2JV6wVkmQ4XmG/EIm+SCYlPZ+V4GWit7Z+I=
+github.com/golang/geo v0.0.0-20230421003525-6adc56603217/go.mod h1:8wI0hitZ3a1IxZfeH3/5I97CI8i5cLGsYe7xNhQGs9U=
+github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
+github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
 github.com/lib/pq v1.10.9 h1:YXG7RB+JIjhP29X+OtkiDnYaXQwpS4JEWq7dtCCRUEw=
 github.com/lib/pq v1.10.9/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
 github.com/twpayne/go-geom v1.5.3 h1:UdH93XzTwpwPiAV38DJ74yg+9/YV9/WCGbKN+NmSvVA=
