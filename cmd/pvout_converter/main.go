@@ -29,7 +29,7 @@ func main() {
 	}
 	defer file.Close()
 
-	if configs.Skip_db_insertion {
+	if !configs.Skip_db_insertion {
 		db, err := db_manager.ConnectDB(configs)
 		if err != nil {
 			panic(err)

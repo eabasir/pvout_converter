@@ -1,8 +1,9 @@
 package configs
 
 import (
-	"github.com/joho/godotenv"
 	"strconv"
+
+	"github.com/joho/godotenv"
 )
 
 type Configs struct {
