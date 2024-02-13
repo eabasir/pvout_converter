@@ -16,7 +16,7 @@ const START_Y = -60
 const INCREMENT = 1 / 120 // 30 arc-second
 const HEADER_LINES = 6
 
-func ProcessFile(file *os.File, month int, db *sql.DB) ([]types.PVData, error) {
+func ProcessFile(file *os.File, month int, db *sql.DB, output_file *os.File) ([]types.PVData, error) {
 	reader := bufio.NewReader(file)
 	line_counter := 0
 	results := make([]types.PVData, 0)
@@ -52,7 +52,13 @@ func ProcessFile(file *os.File, month int, db *sql.DB) ([]types.PVData, error) {
 			return nil, err
 		}
 
-		db_manager.Insert(db, line_results)
+		if db != nil {
+			db_manager.Insert(db, line_results)
+		}
+
+		if output_file != nil {
+			write_to_csv(output_file, line_results)
+		}
 
 	}
 
@@ -70,8 +76,19 @@ func process_line(month int, line_counter int, line string) ([]types.PVData, err
 			if err != nil {
 				continue
 			}
-			res = append(res, types.PVData{month, latitude, longitude, value})
+			res = append(res, types.PVData{Month: month, Latitude: latitude, Longitude: longitude, Value: value})
 		}
 	}
 	return res, nil
+}
+
+func write_to_csv(file *os.File, data []types.PVData) {
+	writer := bufio.NewWriter(file)
+
+	for _, pv := range data {
+		fmt.Fprintf(writer, "POINT(%f %f),%f,%d\n", pv.Longitude, pv.Latitude, pv.Value, pv.Month)
+	}
+
+	writer.Flush()
+
 }

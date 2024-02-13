@@ -29,13 +29,25 @@ func main() {
 	}
 	defer file.Close()
 
-	db, err := db_manager.ConnectDB(configs)
-	if err != nil {
-		panic(err)
-	}
-	defer db_manager.CloseDB(db)
+	if configs.Skip_db_insertion {
+		db, err := db_manager.ConnectDB(configs)
+		if err != nil {
+			panic(err)
+		}
+		defer db_manager.CloseDB(db)
 
-	file_processor.ProcessFile(file, configs.Month, db)
+		file_processor.ProcessFile(file, configs.Month, db, nil)
+	} else {
+
+		output_file_name := fmt.Sprintf("output_%02d.csv", configs.Month)
+		output_file, err := os.Create(output_file_name)
+		if err != nil {
+			panic(err)
+		}
+		defer output_file.Close()
+
+		file_processor.ProcessFile(file, configs.Month, nil, output_file)
+	}
 
 }
 
